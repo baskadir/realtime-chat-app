@@ -5,11 +5,10 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "server",
-    "client"
+    "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently \"yarn workspace server dev\" \"yarn workspace client dev\""
+    "dev": "concurrently \"yarn workspace @chat-app/server dev\" \"yarn workspace @chat-app/client dev\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -1,27 +1,40 @@
 import { VStack, ButtonGroup, Button, Heading } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import TextField from "../../components/TextField";
 import { useNavigate } from "react-router-dom";
+import { formSchema } from "@chat-app/common";
 
 const Login = () => {
   const navigate = useNavigate();
   return (
     <Formik
       initialValues={{ username: "", password: "" }}
-      validationSchema={Yup.object({
-        username: Yup.string()
-          .required("Username required!")
-          .min(6, "Username too short!")
-          .max(28, "Username too long!"),
-        password: Yup.string()
-          .required("Password required!")
-          .min(6, "Password too short!")
-          .max(28, "Password too long!"),
-      })}
+      validationSchema={formSchema}
       onSubmit={(values, actions) => {
-        alert(JSON.stringify(values, null, 2));
+        console.log(values);
         actions.resetForm();
+        fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...values }),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status >= 400) {
+              return;
+            }
+            return res.json();
+          })
+          .then((data) => {
+            if (!data) return;
+            console.log(data);
+          })
+          .catch((err) => {
+            console.log(err);
+            return;
+          });
       }}
     >
       <VStack
@@ -49,7 +62,9 @@ const Login = () => {
         />
 
         <ButtonGroup pt="1rem">
-          <Button colorScheme="teal">Log In</Button>
+          <Button colorScheme="teal" type="submit">
+            Log In
+          </Button>
           <Button onClick={() => navigate("/register")}>Create Account</Button>
         </ButtonGroup>
       </VStack>

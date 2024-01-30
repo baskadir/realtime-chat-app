@@ -5,7 +5,8 @@ import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import theme from "./theme.js";
 import { BrowserRouter } from "react-router-dom";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ChakraProvider theme={theme}>
