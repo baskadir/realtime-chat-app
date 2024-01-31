@@ -1,12 +1,16 @@
-import { VStack, ButtonGroup, Button, Heading } from "@chakra-ui/react";
+import { Text, VStack, ButtonGroup, Button, Heading } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import TextField from "../../components/TextField";
 import { useNavigate } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { formSchema } from "@chat-app/common";
+import { useContext, useState } from "react";
+import { AccountContext } from "../../context/AccountContext";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { setUser } = useContext(AccountContext);
+  const [error, setError] = useState(null);
 
   return (
     <Formik
@@ -14,7 +18,7 @@ const Signup = () => {
       validationSchema={formSchema}
       onSubmit={(values, actions) => {
         actions.resetForm();
-        fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
+        fetch(`${process.env.REACT_APP_API_URL}/auth/signup`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -30,10 +34,14 @@ const Signup = () => {
           })
           .then((data) => {
             if (!data) return;
-            console.log(data);
+            if (data.status) {
+              setError(data.status);
+            } else if (data.loggedIn) {
+              setUser({ ...data });
+              navigate("/home");
+            }
           })
           .catch((err) => {
-            console.log(err);
             return;
           });
       }}
@@ -47,6 +55,9 @@ const Signup = () => {
         spacing="1rem"
       >
         <Heading>Sign Up</Heading>
+        <Text as="p" color="red.500">
+          {error}
+        </Text>
 
         <TextField
           name="username"
@@ -63,7 +74,9 @@ const Signup = () => {
         />
 
         <ButtonGroup pt="1rem">
-          <Button colorScheme="teal">Create Account</Button>
+          <Button colorScheme="teal" type="submit">
+            Create Account
+          </Button>
           <Button onClick={() => navigate("/")} leftIcon={<ArrowBackIcon />}>
             Back to Log In
           </Button>
