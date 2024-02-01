@@ -1,14 +1,18 @@
 const { formSchema } = require("@chat-app/common");
 
-const validateForm = (req, res) => {
+const validateForm = (req, res, next) => {
   const formData = req.body;
   formSchema
     .validate(formData)
     .then((valid) => {
-      if (valid) console.log("Form is OK.");
+      if (valid) {
+        console.log("Form is OK.");
+        next();
+      } else {
+        res.status(422).send();
+      }
     })
     .catch((err) => {
-      console.log(err.errors);
       res.status(422).send();
     });
 };
