@@ -1,11 +1,11 @@
 const express = require("express");
-const validateForm = require("../middlewares/validateForm");
+const { validateForm } = require("../middlewares/validateFormMiddleware");
 const {
   handleLogin,
   checkLogin,
   handleSignup,
 } = require("../controllers/authController");
-const { rateLimiter } = require("../middlewares/rateLimiter");
+const { rateLimiter } = require("../middlewares/rateLimiterMiddleware");
 
 const router = express.Router();
 

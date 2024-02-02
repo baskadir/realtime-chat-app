@@ -22,7 +22,9 @@ const ChatArea = () => {
       fontWeight="700"
     >
       <TabPanels>
-        <Text>There are no friends.. Click add friend to start chat</Text>
+        <TabPanel>
+          <Text>There are no friends.. Click add friend to start chat</Text>
+        </TabPanel>
       </TabPanels>
     </VStack>
   );

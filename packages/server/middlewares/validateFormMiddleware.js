@@ -17,4 +17,4 @@ const validateForm = (req, res, next) => {
     });
 };
 
-module.exports = validateForm;
+module.exports = { validateForm };
