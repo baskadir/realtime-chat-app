@@ -1,6 +1,6 @@
 const Yup = require("yup");
 
-const formSchema = Yup.object({
+const authFormSchema = Yup.object({
   username: Yup.string()
     .required("Username required!")
     .min(6, "Username too short")
@@ -11,4 +11,11 @@ const formSchema = Yup.object({
     .max(28, "Password too long"),
 });
 
-module.exports = { formSchema };
+const friendFormSchema = Yup.object({
+  friendName: Yup.string()
+    .required("Username is required.")
+    .min(6, "Invalid username.")
+    .max(28, "Invalid username."),
+});
+
+module.exports = { authFormSchema, friendFormSchema };

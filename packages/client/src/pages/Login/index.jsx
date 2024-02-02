@@ -2,7 +2,7 @@ import { VStack, ButtonGroup, Button, Heading, Text } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import TextField from "../../components/TextField";
 import { useNavigate } from "react-router-dom";
-import { formSchema } from "@chat-app/common";
+import { authFormSchema } from "@chat-app/common";
 import { useContext, useState } from "react";
 import { AccountContext } from "../../context/AccountContext";
 
@@ -14,7 +14,7 @@ const Login = () => {
   return (
     <Formik
       initialValues={{ username: "", password: "" }}
-      validationSchema={formSchema}
+      validationSchema={authFormSchema}
       onSubmit={(values, actions) => {
         actions.resetForm();
         fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
