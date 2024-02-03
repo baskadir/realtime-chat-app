@@ -30,8 +30,8 @@ const Sidebar = () => {
         </HStack>
         <Divider />
         <VStack as={TabList}>
-          {friendList.map((friend) => (
-            <HStack as={Tab}>
+          {friendList?.map((friend) => (
+            <HStack as={Tab} key={`friend:${friend.userid}`}>
               <Circle
                 bg={friend.isConnected ? "green.600" : "red.500"}
                 w="15px"

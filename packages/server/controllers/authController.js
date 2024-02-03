@@ -1,5 +1,6 @@
 const pool = require("../db");
 const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require("uuid");
 
 const checkLogin = (req, res) => {
   if (req.session.user && req.session.user.username) {
@@ -13,7 +14,7 @@ const handleLogin = async (req, res) => {
   const { username, password } = req.body;
 
   const existingUser = await pool.query(
-    "SELECT id, username, passwordhash FROM users WHERE username=$1",
+    "SELECT id, username, passwordhash, userid FROM users WHERE username=$1",
     [username]
   );
 
@@ -27,6 +28,7 @@ const handleLogin = async (req, res) => {
       req.session.user = {
         username,
         id: existingUser.rows[0].id,
+        userid: existingUser.rows[0].userid,
       };
       res.json({ loggedIn: true, username });
     } else {
@@ -49,13 +51,14 @@ const handleSignup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUserQuery = await pool.query(
-      "INSERT INTO users(username, passwordhash) VALUES ($1,$2) RETURNING id, username",
-      [username, hashedPassword]
+      "INSERT INTO users(username, passwordhash, userid) VALUES ($1,$2,$3) RETURNING id, username, userid",
+      [username, hashedPassword, uuidv4()]
     );
 
     req.session.user = {
       username,
       id: newUserQuery.rows[0].id,
+      userid: newUserQuery.rows[0].userid,
     };
     res.json({ loggedIn: true, username });
   } else {

@@ -8,8 +8,11 @@ const cors = require("cors");
 const authRouter = require("./router/authRouter");
 const { sessionMiddleware, wrap } = require("./middlewares/sessionMiddleware");
 const {
-  authorizeUserMiddleware,
-} = require("./middlewares/authorizeUserMiddleware");
+  authorizeUser,
+  initializeUser,
+  addFriend,
+  onDisconnect,
+} = require("./controllers/socketController");
 
 const PORT = 3200;
 const corsConfig = {
@@ -34,8 +37,13 @@ app.use("/api/auth", authRouter);
 io.use(wrap(sessionMiddleware));
 io.use(authorizeUser);
 io.on("connect", (socket) => {
-  console.log(socket.id);
-  console.log(socket.request.session.user.username);
+  initializeUser(socket);
+
+  socket.on("add_friend", (friendName, callback) => {
+    addFriend(socket, friendName, callback);
+  });
+
+  socket.on("disconnecting", () => onDisconnect(socket));
 });
 
 server.listen(PORT, () => {
