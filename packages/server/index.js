@@ -12,6 +12,7 @@ const {
   initializeUser,
   addFriend,
   onDisconnect,
+  addMessage,
 } = require("./controllers/socketController");
 
 const PORT = 3200;
@@ -42,6 +43,8 @@ io.on("connect", (socket) => {
   socket.on("add_friend", (friendName, callback) => {
     addFriend(socket, friendName, callback);
   });
+
+  socket.on("add_message", message => addMessage(socket, message))
 
   socket.on("disconnecting", () => onDisconnect(socket));
 });

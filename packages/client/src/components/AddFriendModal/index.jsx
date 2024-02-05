@@ -14,11 +14,11 @@ import { Form, Formik } from "formik";
 import { friendFormSchema } from "@chat-app/common";
 import socket from "../../socket";
 import { useCallback, useContext, useState } from "react";
-import { FriendContext } from "../../context/FriendContext";
+import { ChatContext } from "../../context/ChatProvider";
 
 const AddFriendModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState("");
-  const { setFriendList } = useContext(FriendContext);
+  const { setFriendList } = useContext(ChatContext);
 
   const closeModal = useCallback(() => {
     setError("");

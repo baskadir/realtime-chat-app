@@ -12,11 +12,11 @@ import {
 } from "@chakra-ui/react";
 import { ChatIcon } from "@chakra-ui/icons";
 import { useContext } from "react";
-import { FriendContext } from "../../context/FriendContext";
+import { ChatContext } from "../../context/ChatProvider";
 import AddFriendModal from "../AddFriendModal";
 
 const Sidebar = () => {
-  const { friendList } = useContext(FriendContext);
+  const { friendList } = useContext(ChatContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
