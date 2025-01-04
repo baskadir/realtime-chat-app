@@ -14,6 +14,8 @@ const {
   onDisconnect,
   addMessage,
 } = require("./controllers/socketController");
+const { initializeDatabase } = require("./db/initializeDb");
+const s = require("connect-redis");
 
 const PORT = 3200;
 const corsConfig = {
@@ -44,11 +46,22 @@ io.on("connect", (socket) => {
     addFriend(socket, friendName, callback);
   });
 
-  socket.on("add_message", message => addMessage(socket, message))
+  socket.on("add_message", (message) => addMessage(socket, message));
 
   socket.on("disconnecting", () => onDisconnect(socket));
 });
 
-server.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await initializeDatabase();
+
+    server.listen(PORT, () => {
+      console.log(`Server listening on ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Error initializing database:", err);
+    process.exit(1);
+  }
+};
+
+startServer();

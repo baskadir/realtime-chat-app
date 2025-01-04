@@ -1,5 +1,6 @@
 const redisClient = require("../redis");
 const { parseFriendList } = require("../helpers/parseFriendList");
+const pool = require("../db/index");
 
 const authorizeUser = (socket, next) => {
   if (!socket.request.session || !socket.request.session.user) {
@@ -48,11 +49,19 @@ const initializeUser = async (socket) => {
     return { to: parsedStr[0], from: parsedStr[1], content: parsedStr[2] };
   });
 
-  if (messages && messages.length > 0) 
-    socket.emit("get_messages", messages);
+  if (messages && messages.length > 0) socket.emit("get_messages", messages);
 };
 
 const addFriend = async (socket, friendName, callback) => {
+  const existingUser = await pool.query(
+    "SELECT id FROM users WHERE username=$1",
+    [friendName]
+  );
+  if (existingUser.rowCount === 0) {
+    callback({ done: false, errorMessage: "User doesn't exist." });
+    return;
+  }
+
   if (friendName === socket.user.username) {
     callback({ done: false, errorMessage: "You cannot add yourself" });
     return;
@@ -71,7 +80,7 @@ const addFriend = async (socket, friendName, callback) => {
   );
 
   if (currentFriendList && currentFriendList.indexOf(friendName) !== -1) {
-    callback({ done: false, errorMessage: "Firend already exist." });
+    callback({ done: false, errorMessage: "Friend already exist." });
     return;
   }
 
